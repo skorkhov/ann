@@ -1,59 +1,37 @@
-'''
-Helper Functions in utils:
-
-relu(Z):
-	A, Z
-
-sigmoid(Z):
-	A, Z
-
-softmax(Z):
-	A, Z
-
-relu_backward(dA):
-	dZ
-
-sigmoid_backward(dA):
-	dZ
-
-softmax_backward(dA):
-	dZ
-
-cost_total(AL, Y):
-	cost
-'''
 
 import numpy as np
 
+
 def relu(Z):
-    '''
-    Computes elementwise ReLU of the input, where
+    """
+    Computes element wise ReLU of the input, where
     relu(x) = max(0, x)
 
     Input:
-    Z = np.array of shape (layer_size, n_samples)
+    Z -- np.array of shape (layer_size, n_samples)
 
     Output:
-    A = np.array with elementwise ReLU's of Z
-    cache = Z, stored for later use in backprop
-    '''
+    A -- np.array with elementwise ReLU's of Z
+    cache -- Z, stored for later use in backprop
+    """
 
     A = np.maximum(0, Z)
     cache = Z
     
     return A, cache
 
+
 def sigmoid(Z):
-    '''
+    """
     Computes elementwise Sigmoid of the imput
 
     Input:
-    Z = np.array of shape (layer_size, n_samples)
+    Z -- np.array of shape (layer_size, n_samples)
 
     Output:
-    A = np.array with elementwise sigmoids of Z
-    cache = Z, stored for later use in backprop
-    '''
+    A -- np.array with elementwise sigmoids of Z
+    cache -- Z, stored for later use in backprop
+    """
 
     A = 1 / (1 + np.exp(-Z))
     cache = Z
@@ -61,16 +39,17 @@ def sigmoid(Z):
 
     return A, cache
 
+
 def softmax(Z):
-    '''
+    """
     Computes softmax of Z
     
     Inputs:
-    Z = np.array of shape (layer_size, n_samples)
+    Z -- np.array of shape (layer_size, n_samples)
     
     Outputs:
-    y = np.array of shape (n_classes, n_samples)
-    '''
+    y -- np.array of shape (n_classes, n_samples)
+    """
     
     z_exp = np.exp(Z)
     sum_z_exp = np.sum(z_exp, axis=0, keepdims=True)
@@ -84,16 +63,17 @@ def softmax(Z):
     
     return A, cache
 
+
 def relu_backward(dA, cache):
-    '''
+    """
     Computes the deriative of ReLU.
 
     Inputs:
-    dA = np.array with the derivative of the cost w/respect to the output A of a layer
+    dA -- np.array with the derivative of the cost w/respect to the output A of a layer
     cache = np.array Z from forward prop
 
-    dZ = np.array with the derivative of the cost w/respect to Z of the layer
-    '''
+    dZ -- np.array with the derivative of the cost w/respect to Z of the layer
+    """
 
     Z = cache
 
@@ -104,16 +84,17 @@ def relu_backward(dA, cache):
     
     return dZ
 
+
 def sigmoid_backward(dA, cache):
-    '''
+    """
     Computes the deriative of sigmoid.
 
     Inputs:
-    dA = np.array with the derivative of the cost w/respect to the output A of a layer
-    cache = np.array Z from forward prop
+    dA -- np.array with the derivative of the cost w/respect to the output A of a layer
+    cache -- np.array Z from forward prop
 
-    dZ = np.array with the derivative of the cost w/respect to Z of the layer
-    '''
+    dZ -- np.array with the derivative of the cost w/respect to Z of the layer
+    """
     
     Z = cache
     s = 1/(1+np.exp(-Z))
@@ -121,17 +102,18 @@ def sigmoid_backward(dA, cache):
     
     return dZ
 
+
 def softmax_backward(dA, cache):
-    '''
+    """
     Computes the deriative of softmax.
 
     Inputs:
-    dA = np.array with the derivative of the cost w/respect to the output A of a layer
-    cache = np.array Z from forward prop
+    dA -- np.array with the derivative of the cost w/respect to the output A of a layer
+    cache -- np.array Z from forward prop
 
     Outputs:
-    dZ = np.array with the derivative of the cost w/respect to Z of the layer
-    '''
+    dZ -- np.array with the derivative of the cost w/respect to Z of the layer
+    """
     
     Z = cache
     
@@ -141,17 +123,18 @@ def softmax_backward(dA, cache):
     
     return dZ
 
+
 def cost_total(AL, Y):
-    '''
+    """
     Computes the cost function associated with a set of predictions AL and ground truth labels Y.
 
     Inputs:
-    AL = np.array with predictions, AL.shape = (output_size, n_samples)
-    Y = np.array with ground truth labels, Y.shape = (output_size, n_samples)
+    AL -- np.array with predictions, AL.shape = (output_size, n_samples)
+    Y -- np.array with ground truth labels, Y.shape = (output_size, n_samples)
 
     Outputs:
-    cost = float, logLoss cost associated with the predictions and for the correct labels. 
-    '''
+    cost -- float, logLoss cost associated with the predictions and for the correct labels.
+    """
     
     assert(AL.shape == Y.shape)
     
