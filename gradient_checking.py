@@ -78,16 +78,16 @@ def approximate_gradient(parameters, X, Y, epsilon=1e-7):
     
     for i in range(n_params):
         pp = np.copy(p)
-        pp[i, 0] += epsilon
+        pp[i] += epsilon
         AL, _ = L_forward(X, vector_to_dict(pp, p_struct))
-        Jp[i, 0] = cost_total(AL, Y)
+        Jp[i] = cost_total(AL, Y)
         
         pm = np.copy(p)
-        pm[i, 0] -= epsilon
+        pm[i] -= epsilon
         AL, _ = L_forward(X, vector_to_dict(pm, p_struct))
-        Jm[i, 0] = cost_total(AL, Y)
+        Jm[i] = cost_total(AL, Y)
         
-        grad_approx[i, 0] = (Jp[i, 0] - Jm[i, 0]) / (2 * epsilon)
+        grad_approx[i] = (Jp[i] - Jm[i]) / (2 * epsilon)
     
     return grad_approx
 
