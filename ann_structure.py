@@ -3,18 +3,29 @@ from ann_utils import *
 import numpy as np
 
 
-def init_params(layer_dims):
+def init_params(layer_dims, kind='small'):
     """
     Initializess parameters according to He et al initialization.
     """
     
     params = {}
     L = len(layer_dims)
-
-    for i in range(1, L):
-        params['W' + str(i)] = np.random.randn(layer_dims[i], layer_dims[i - 1]) * np.sqrt(2 / layer_dims[i-1])
-        params['b' + str(i)] = np.zeros((layer_dims[i], 1))
-
+    
+    if kind == 'small':
+        for i in range(1, L):
+            params['W' + str(i)] = np.random.randn(layer_dims[i], layer_dims[i - 1]) * 0.01
+            params['b' + str(i)] = np.zeros((layer_dims[i], 1))
+            
+    elif kind == 'large':
+        for i in range(1, L):
+            params['W' + str(i)] = np.random.randn(layer_dims[i], layer_dims[i - 1]) * 5
+            params['b' + str(i)] = np.zeros((layer_dims[i], 1))
+    
+    elif kind == 'He':
+        for i in range(1, L):
+            params['W' + str(i)] = np.random.randn(layer_dims[i], layer_dims[i - 1]) * np.sqrt(2 / layer_dims[i-1])
+            params['b' + str(i)] = np.zeros((layer_dims[i], 1))
+            
     return params
 
 
