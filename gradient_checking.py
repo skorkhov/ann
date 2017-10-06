@@ -3,7 +3,7 @@ from ann_structure import L_forward
 from ann_utils import cost_total
 
 
-def dict_to_vector(d):
+def dict_to_vector(d): # correct
     """
     Converts a dictionary with numpy array values into a vector with
     concatenated flattened arrays.
@@ -18,20 +18,21 @@ def dict_to_vector(d):
         struct[key] = d[key].shape
     """
     
-    vector = np.array([])
+    vector = np.array([], dtype=np.float128)
+    vector = vector.reshape(-1, 1)
     struct = {}
     
     keys = set(d.keys())
     
     for key in keys:
         struct[key] = d[key].shape
-        temp = d[key].flatten()
-        vector = np.append(vector, temp)
+        temp = d[key].reshape(-1, 1)
+        vector = np.append(vector, temp, axis=0)
     
     return vector, struct
 
 
-def vector_to_dict(vector, struct):
+def vector_to_dict(vector, struct): # correct
     """
     Converts a vector to a dictionary according to a structure defined in struct.
     Inputs:
@@ -92,7 +93,7 @@ def approximate_gradient(parameters, X, Y, epsilon=1e-7):
     return grad_approx
 
 
-def gradient_difference(grad_approx, grad_exact):
+def gradient_difference(grad_approx, grad_exact): # correct
     """
     Computes the difference between the approximate and exact gradient
     
@@ -103,7 +104,6 @@ def gradient_difference(grad_approx, grad_exact):
     Outputs:
     difference -- e measure of how close the input parameters are.
     """
-    
     assert(grad_approx.shape == grad_exact.shape)
     
     difference = np.linalg.norm(grad_exact - grad_approx) / (
