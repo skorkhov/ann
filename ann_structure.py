@@ -12,7 +12,7 @@ def init_params(layer_dims):
     L = len(layer_dims)
 
     for i in range(1, L):
-        params['W' + str(i)] = np.random.randn(layer_dims[i], layer_dims[i - 1]) * 0.01  # * np.sqrt(2 / layer_dims[i-1])
+        params['W' + str(i)] = np.random.randn(layer_dims[i], layer_dims[i - 1]) * np.sqrt(2 / layer_dims[i-1])
         params['b' + str(i)] = np.zeros((layer_dims[i], 1))
 
     return params
@@ -121,9 +121,9 @@ def L_forward(X, parameters):
     WL = parameters['W' + str(n_layers)]
     bL = parameters['b' + str(n_layers)]
     ZL, lin_cache = linear_forward(A_prev, WL, bL)
-    AL, activ_cache = softmax(ZL)  #
+    AL, activ_cache = softmax(ZL)
 
-    caches.append((lin_cache, activ_cache))
+    caches.append((lin_cache, activ_cache)) # caches = ((A_prev, W, b), Z)
 
     return AL, caches
 
@@ -134,11 +134,16 @@ def L_backward(AL, Y, caches):
     L = len(caches)  # number of layers
     m = Y.shape[1]  # number of samples
 
-    # initialize back propagation:
-    dAL = (-1 / m) * np.divide(Y, AL)  # * S * (1 - S)
-
+    # Initialize back propagation:
+    # If sigmoid,
+    # dAL = (-1 / m) * np.divide(Y, AL)  # * S * (1 - S)
+    # dA_prev, dW, db = activation_backward(dAL, current_cache, activation='softmax')
+    
+    # softmax initialization:
+    dZL = (1 / m) * (AL - Y)
+    
     current_cache = caches[L - 1]
-    dA_prev, dW, db = activation_backward(dAL, current_cache, activation='softmax')
+    dA_prev, dW, db = linear_backward(dZL, current_cache[0])
     grads['dW' + str(L)] = dW
     grads['db' + str(L)] = db
 
