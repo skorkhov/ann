@@ -22,7 +22,7 @@ def dict_to_vector(d): # correct
     vector = vector.reshape(-1, 1)
     struct = {}
     
-    keys = set(d.keys())
+    keys = sorted(d.keys())
     
     for key in keys:
         struct[key] = d[key].shape
@@ -45,8 +45,9 @@ def vector_to_dict(vector, struct): # correct
     """
     
     d = {}
+    keys = sorted(struct.keys())
     
-    for key in set(struct.keys()):
+    for key in keys:
         length = np.prod(struct[key])
         
         val = vector[:length].reshape(struct[key])
@@ -71,29 +72,31 @@ def approximate_gradient(parameters, X, Y, epsilon=1e-7):
     grad_approx -- vector array with approximate gradient.
     """
     
-    p, p_struct = dict_to_vector(parameters)
-    n_params = len(p)
-    Jp = np.zeros((n_params, 1))
-    Jm = np.zeros((n_params, 1))
+    param_vector, param_struct = dict_to_vector(parameters)
+    n_params = len(param_vector)
+    cost_plus = np.zeros((n_params, 1))
+    cost_minus = np.zeros((n_params, 1))
     grad_approx = np.zeros((n_params, 1))
     
     for i in range(n_params):
-        pp = np.copy(p)
-        pp[i] += epsilon
-        AL, _ = L_forward(X, vector_to_dict(pp, p_struct))
-        Jp[i] = cost_total(AL, Y)
+        p_plus = np.copy(param_vector)
+        p_plus[i][0] += epsilon
+        params_plus = vector_to_dict(p_plus, param_struct)
+        AL_plus, _ = L_forward(X, params_plus)
+        cost_plus[i][0] = cost_total(AL_plus, Y)
         
-        pm = np.copy(p)
-        pm[i] -= epsilon
-        AL, _ = L_forward(X, vector_to_dict(pm, p_struct))
-        Jm[i] = cost_total(AL, Y)
+        p_minus = np.copy(param_vector)
+        p_minus[i][0] -= epsilon
+        params_minus = vector_to_dict(p_minus, param_struct)
+        AL_minus, _ = L_forward(X, params_minus)
+        cost_minus[i][0] = cost_total(AL_minus, Y)
         
-        grad_approx[i] = (Jp[i] - Jm[i]) / (2 * epsilon)
+        grad_approx[i][0] = (cost_plus[i][0] - cost_minus[i][0]) / (2 * epsilon)
     
     return grad_approx
 
 
-def gradient_difference(grad_approx, grad_exact): # correct
+def gradient_difference(grad_approx, grad_exact, epsilon=1e-7): # correct
     """
     Computes the difference between the approximate and exact gradient
     
@@ -109,9 +112,9 @@ def gradient_difference(grad_approx, grad_exact): # correct
     difference = np.linalg.norm(grad_exact - grad_approx) / (
     np.linalg.norm(grad_exact) + np.linalg.norm(grad_approx))
     
-    if difference > 1e-7:
+    if difference > epsilon:
         print('Possibility of Error: ' + str(difference))
     else:
-        print('Like Correct ' + str(difference))
+        print('Likely Correct ' + str(difference))
     
     return difference
